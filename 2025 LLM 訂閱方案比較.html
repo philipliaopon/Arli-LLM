@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 LLM 訂閱方案比較</title>
+    <style>
+        :root {
+            --color-primary: #2180a2;
+            --color-primary-hover: #1a6a80;
+            --color-secondary: #f5f5f5;
+            --color-text: #1a1a1a;
+            --color-text-light: #666;
+            --color-border: #e0e0e0;
+            --color-success: #22a857;
+            --color-warning: #d4a73b;
+            --color-error: #c01530;
+            --color-info: #627c84;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #f8fafb 0%, #eef2f5 100%);
+            color: var(--color-text);
+            padding: 24px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #2180a2, #1a6a80);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            color: var(--color-text-light);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 18px;
+            border: 1px solid var(--color-border);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: var(--color-text);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .filter-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .comparison-table {
+            margin: 32px 0;
+            overflow-x: auto;
+        }
+
+        .table-wrapper {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--color-secondary);
+            padding: 14px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--color-border);
+            font-size: 0.95em;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid var(--color-border);
+            font-size: 0.9em;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: var(--color-secondary);
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin: 48px 0;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            border: 1px solid var(--color-border);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--brand-color), var(--brand-color-light));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-4px);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card.openai { --brand-color: #10a37f; --brand-color-light: #4ade80; }
+        .card.google { --brand-color: #4285f4; --brand-color-light: #60a5fa; }
+        .card.anthropic { --brand-color: #d4a574; --brand-color-light: #f59e0b; }
+        .card.xai { --brand-color: #000000; --brand-color-light: #4b5563; }
+        .card.manus { --brand-color: #7c3aed; --brand-color-light: #a78bfa; }
+        .card.deepseek { --brand-color: #ef4444; --brand-color-light: #f87171; }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .card-logo {
+            font-size: 2em;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-secondary);
+            border-radius: 8px;
+        }
+
+        .card-title-group h3 {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .card-title-group p {
+            font-size: 0.85em;
+            color: var(--color-text-light);
+        }
+
+        .price-section {
+            margin: 20px 0;
+            padding-top: 20px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .price-tiers {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .price-tier {
+            background: var(--color-secondary);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid var(--brand-color);
+        }
+
+        .tier-name {
+            font-weight: 600;
+            font-size: 0.95em;
+            color: var(--color-text);
+        }
+
+        .tier-price {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: var(--brand-color);
+            margin-top: 4px;
+        }
+
+        .tier-price span {
+            font-size: 0.6em;
+            color: var(--color-text-light);
+            margin-left: 4px;
+        }
+
+        .features {
+            margin-top: 16px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            color: var(--color-text-light);
+        }
+
+        .feature-item::before {
+            content: '✓';
+            color: var(--color-success);
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+
+        .badge-popular {
+            background: rgba(34, 168, 87, 0.1);
+            color: var(--color-success);
+        }
+
+        .badge-new {
+            background: rgba(212, 167, 59, 0.1);
+            color: var(--color-warning);
+        }
+
+        .badge-enterprise {
+            background: rgba(96, 165, 250, 0.1);
+            color: #3b82f6;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .model-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin: 48px 0;
+        }
+
+        .detail-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-border);
+            transition: all 0.3s ease;
+        }
+
+        .detail-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-4px);
+        }
+
+        .detail-card h4 {
+            font-size: 1.2em;
+            margin-bottom: 16px;
+            color: var(--brand-color);
+            font-weight: 700;
+        }
+
+        .detail-section {
+            margin-bottom: 16px;
+        }
+
+        .detail-section-title {
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .detail-section-content {
+            font-size: 0.9em;
+            color: var(--color-text-light);
+            line-height: 1.6;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--color-border);
+            padding-bottom: 16px;
+        }
+
+        .modal-header h2 {
+            font-size: 1.8em;
+            color: var(--color-text);
+            margin: 0;
+        }
+
+        .close-btn {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--color-text-light);
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--color-text);
+        }
+
+        .job-role-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
+        }
+
+        .job-role-card {
+            background: linear-gradient(135deg, #f8fafb, #eef2f5);
+            border: 2px solid var(--color-border);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .job-role-card:hover {
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-4px);
+        }
+
+        .job-role-card h3 {
+            font-size: 1.2em;
+            color: var(--color-primary);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .job-role-card p {
+            font-size: 0.9em;
+            color: var(--color-text-light);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .role-recommendation {
+            background: #e3f2fd;
+            border-left: 4px solid var(--color-primary);
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 12px;
+        }
+
+        .role-recommendation strong {
+            color: var(--color-primary);
+        }
+
+        .recommender-section {
+            margin: 24px 0;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--color-text);
+        }
+
+        .input-group textarea, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-family: inherit;
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .input-group textarea:focus, .input-group select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(33, 128, 162, 0.1);
+        }
+
+        .recommend-btn, .compare-btn {
+            background: var(--color-primary);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .recommend-btn:hover, .compare-btn:hover {
+            background: var(--color-primary-hover);
+            box-shadow: var(--shadow-md);
+        }
+
+        .compare-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .recommendation-results {
+            margin-top: 24px;
+            padding: 20px;
+            background: #f0f7ff;
+            border-left: 4px solid var(--color-primary);
+            border-radius: 8px;
+            display: none;
+        }
+
+        .recommendation-results.show {
+            display: block;
+        }
+
+        .recommendation-item {
+            background: white;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .recommendation-item strong {
+            color: var(--color-primary);
+            font-size: 1.1em;
+        }
+
+        .recommendation-reason {
+            font-size: 0.9em;
+            color: var(--color-text-light);
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        .match-score {
+            display: inline-block;
+            background: var(--color-primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .model-selector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .model-checkbox {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: var(--color-secondary);
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .model-checkbox:hover {
+            border-color: var(--color-primary);
+            background: #f0f7ff;
+        }
+
+        .model-checkbox input[type="checkbox"] {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .model-checkbox.checked {
+            border-color: var(--color-primary);
+            background: linear-gradient(135deg, #f0f7ff, #e8f1f8);
+        }
+
+        .model-label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .model-name {
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .model-company {
+            font-size: 0.85em;
+            color: var(--color-text-light);
+        }
+
+        .selection-info {
+            background: #e3f2fd;
+            border-left: 4px solid var(--color-primary);
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            color: var(--color-primary);
+            font-weight: 500;
+            display: none;
+        }
+
+        .advanced-comparison-table {
+            overflow-x: auto;
+            margin-top: 24px;
+        }
+
+        .advanced-comparison-table table {
+            width: 100%;
+            font-size: 0.85em;
+        }
+
+        .advanced-comparison-table th {
+            background: var(--color-primary);
+            color: white;
+            font-weight: 600;
+            padding: 12px;
+        }
+
+        .advanced-comparison-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .advanced-comparison-table tr:hover {
+            background: var(--color-secondary);
+        }
+
+        .comparison-metric {
+            font-weight: 600;
+            color: var(--color-text);
+            min-width: 150px;
+        }
+
+        .comparison-highlight {
+            background: #fffbeb;
+            font-weight: 600;
+            color: var(--color-warning);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid var(--color-border);
+            color: var(--color-text-light);
+            font-size: 0.9em;
+        }
+
+        .highlight-premium {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border: 1px solid #fcd34d;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .comparison-table {
+                overflow-x: auto;
+            }
+
+            table {
+                font-size: 0.85em;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>2025 AI LLM 訂閱方案比較</h1>
+            <p>全球主流語言模型訂閱費用一覽表 · 所有價格以美元（USD）計</p>
+        </div>
+
+        <div class="filter-controls">
+            <button class="filter-btn active" onclick="filterCards('all')">全部</button>
+            <button class="filter-btn" onclick="filterCards('personal')">個人方案</button>
+            <button class="filter-btn" onclick="filterCards('business')">商務/企業方案</button>
+            <button class="filter-btn" onclick="filterCards('budget')">平價方案</button>
+            <button class="filter-btn" onclick="openJobRoleComparison()">按職位比較</button>
+            <button class="filter-btn" onclick="openAIRecommender()">智能推薦</button>
+            <button class="filter-btn" onclick="openAdvancedComparison()">🔍 進階比較</button>
+        </div>
+
+        <!-- Quick Comparison Table - NOW AT TOP -->
+        <div class="comparison-table">
+            <div class="table-wrapper">
+                <h2 style="margin-bottom: 20px; font-size: 1.5em;">快速對比表</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>模型名稱</th>
+                            <th>方案類型</th>
+                            <th>基礎月費 (USD)</th>
+                            <th>入門版特性</th>
+                            <th>進階/商務版特性</th>
+                            <th>適用場景</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>ChatGPT</strong></td>
+                            <td>個人/商務</td>
+                            <td>$20 / $200</td>
+                            <td>GPT-4o、o3 降低成本版</td>
+                            <td>o3-pro、Sora 視頻生成、Operator 自動化</td>
+                            <td>通用、企業級推理</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gemini</strong></td>
+                            <td>個人/商務</td>
+                            <td>$19.99 / $20</td>
+                            <td>Gemini 3 Pro、YouTube 摘要</td>
+                            <td>Gemini 3 Deep Think、Gemini Agent 自動化</td>
+                            <td>Google 生態、多媒體分析</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Claude</strong></td>
+                            <td>個人/商務</td>
+                            <td>$20 / $25-30</td>
+                            <td>Claude Sonnet 4.5、200K context</td>
+                            <td>Claude Team 協作、5x 額度、優先支援</td>
+                            <td>文案寫作、編碼、企業協作</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Super Grok</strong></td>
+                            <td>個人</td>
+                            <td>$30</td>
+                            <td>Grok 4、X 平台整合、實時資訊</td>
+                            <td>N/A（個人方案無進階版）</td>
+                            <td>社群媒體創作、內容優化</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Manus AI</strong></td>
+                            <td>個人/商務</td>
+                            <td>$39 / $199</td>
+                            <td>3,900 Credits、2 個並行任務</td>
+                            <td>19,000 Credits、5 個並行任務、API 整合</td>
+                            <td>自動化工作流、業務流程</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DeepSeek</strong></td>
+                            <td>開發者 API</td>
+                            <td>$0.27-5.6</td>
+                            <td>Chat API $0.27/百萬 token</td>
+                            <td>R1 Reasoner API $5.6/百萬 token</td>
+                            <td>開發整合、成本優化</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bento-grid" id="bentoGrid">
+            <!-- ChatGPT Plus -->
+            <div class="card openai" data-category="personal budget">
+                <div class="card-header">
+                    <div class="card-logo">🤖</div>
+                    <div class="card-title-group">
+                        <h3>ChatGPT Plus</h3>
+                        <p>OpenAI · 個人方案</p>
+                    </div>
+                </div>
+                <div class="price-section">
+                    <div class="price-tiers">
+                        <div class="price-tier">
+                            <div class="tier-name">Plus 訂閱</div>
+                            <div class="tier-price">$20<span>/月</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="features">
+                    <div class="feature-item">GPT-4o、o3（降低成本版本）無限使用</div>
+                    <div class="feature-item">DALL·E 3 圖像生成</div>
+                    <div class="feature-item">Advanced Voice Mode</div>
+                    <div class="feature-item">深度研究 (30 次/10天)</div>
+                    <div class="feature-item">優先客戶支援</div>
+                </div>
+                <div><span class="badge badge-popular">最受歡迎</span></div>
+            </div>
+
+            <!-- ChatGPT Pro -->
+            <div class="card openai highlight-premium" data-category="business">
+                <div class="card-header">
+                    <div class="card-logo">⚡</div>
+                    <div class="card-title-group">
+                        <h3>ChatGPT Pro</h3>
+                        <p>OpenAI · 商務專業版</p>
+                    </div>
+                </div>
+                <div class="price-section">
+                    <div class="price-tiers">
+                        <div class="price-tier">
+                            <div class="tier-name">Pro 訂閱</div>
+                            <div class="tier-price">$200<span>/月</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="features">
+                    <div class="feature-item">Plus 全部功能</div>
+                    <div class="feature-item">o3-pro 推理模型（最強推理）</div>
+                    <div class="feature-item">Sora 視頻生成無限制</div>
+                    <div class="feature-item">深度研究無限制</div>
+                    <div class="feature-item">Operator 自動化代理</div>
+                </div>
+                <div><span class="badge badge-enterprise">商務專業版</span></div>
+            </div>
+
+            <!-- Gemini Advanced -->
+            <div class="card google" data-category="personal budget">
+                <div class="card-header">
+                    <div class="card-logo">🔵</div>
+                    <div class="card-title-group">
+                        <h3>Gemini Advanced</h3>
+                        <p>Google · 個人方案</p>
+                    </div>
+                </div>
+                <div class="price-section">
+                    <div class="price-tiers">
+                        <div class="price-tier">
+                            <div class="tier-name">Advanced 方案</div>
+                            <div class="tier-price">$19.99<span>/月</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="features">
+                    <div class="feature-item">Gemini 3 Pro、2.5 Pro 無限使用</div>
+                    <div class="feature-item">YouTube 影片摘要與分析</div>
+                    <div class="feature-item">Gmail、Google 文件深度整合</div>
+                    <div class="feature-item">Imagen 3 圖像生成</div>
+                    <div class="feature-item">100GB 儲存空間</div>
+                </div>
+                <div><span class="badge badge-popular">高度整合</span></div>
+            </div>
+
+            <!-- Google AI Ultra -->
+            <div class="card google highlight-premium" data-category="business">
+                <div class="card-header">
+                    <div class="card-logo">💎</div>
+                    <div class="card-title-group">
+                        <h3>Google AI Ultra</h3>
+                        <p>Google · 商務專業版</p>
+                    </div>
+                </div>
+                <div class="price-section">
+                    <div class="price-tiers">
+                        <div class="price-tier">
+                            <div class="tier-name">AI Ultra 方案</div>
+                            <div class="tier-price">$20<span>/月</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="features">
+                    <div class="feature-item">Gemini 3 Deep Think（高級推理模式）</div>
+                    <div class="feature-item">Gemini Agent 多步驟自動化</div>
+                    <div class="feature-item">Advanced 全部功能</div>
+                    <div class="feature-item">優先 API 支援</div>
+                    <div class="feature-item">企業級客戶服務</div>
+                </div>
+                <div><span class="badge badge-enterprise">商務專業版</span></div>
+            </div>
+
+            <!-- Claude Pro -->
+            <div class="card anthropic" data-category="personal budget">
+                <div class="card-header">
+                    <div class="card-logo">🧠</div>
+                    <div class="card-title-group">
+                        <h3>Claude Pro</h3>
+                        <p>Anthropic · 個人方案</p>
+                    </div>
+                </div>
+                <div class="price-section">
+                    <div class="price-tiers">
+                        <div class="price-tier">
+                            <div class="tier-name">Pro 訂閱</div>
+                            <div class="tier-price">$20<span>/月</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="features">
+                    <div class="feature-item">Claude Sonnet 4.5（最新版本）無限使用</div>
+                    <div class="feature-item">200K context window 長文件分析</div>
+                    <div class="feature-item">Code Execution 與即時執行</div>
+                    <div class="feature-item">高優先序處理</div>
+                    <div class="feature-item">文案寫作與編碼最佳選擇</div>
+                </div>
+                <div><span class="badge badge-popular">文案與編碼專家</span></div>
+            </div>
+
+            <!-- Claude Team -->
+            <div class="card anthropic highlight-premium" data-category="business">
+                <div class="card-header">
+                    <div class="card-logo">🎯</div>
+                    <div class="card-title-group">
+                        <h3>Claude Team</h3>
+                        <p>Anthropic · 商務版</p>
+                    </div>
+                </div>
+                <div class="price-section">
+                    <div class="price-tiers">
+                        <div class="price-tier">
+                            <div class="tier-name">Team (基礎)</div>
+                            <div class="tier-price">$30<span>/用戶/月</span></div>
+                        </div>
+                        <div class="price-tier">
+                            <div class="tier-name">Team (10+ 用戶)</div>
+                            <div class="tier-price">$25<span>/用戶/月</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="features">
+                    <div class="feature-item">Pro 全部功能</div>
+                    <div class="feature-item">5x 使用額度</div>
+                    <div class="feature-item">Team 工作區與協作功能</div>
+                    <div class="feature-item">共享 Prompt 庫與專案管理</div>
+                    <div class="feature-item">優先商務支援</div>
+                </div>
+                <div><span class="badge badge-enterprise">商務版</span></div>
+            </div>
+
+            <!-- Super Grok -->
+            <div class="card xai" data-category="personal">
+                <div class="card-header">
+                    <div class="card-logo">⚙️</div>
+                    <div class="card-title-group">
+                        <h3>Super Grok</h3>
+                        <p>xAI · 個人方案</p>
+                    </div>
+                </div>
+                <div class="price-section">
+                    <div class="price-tiers">
+                        <div class="price-tier">
+                            <div class="tier-name">Super Grok</div>
+                            <div class="tier-price">$30<span>/月</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="features">
+                    <div class="feature-item">Grok 4 最新版本無限使用</div>
+                    <div class="feature-item">X 平台即時資訊與發帖整合</div>
+                    <div class="feature-item">高效能推理與分析</div>
+                    <div class="feature-item">內容創作與最佳化</div>
+                    <div class="feature-item">社群媒體策略輔助</div>
+                </div>
+                <div><span class="badge badge-new">個人創作者優選</span></div>
+            </div>
+
+            <!-- Manus AI Starter -->
+            <div class="card manus" data-category="personal budget">
+                <div class="card-header">
+                    <div class="card-logo">🚀</div>
+                    <div class="card-title-group">
+                        <h3>Manus Starter</h3>
+                        <p>Manus AI · 個人方案</p>
+                    </div>
+                </div>
+                <div class="price-section">
+                    <div class="price-tiers">
+                        <div class="price-tier">
+                            <div class="tier-name">Starter 方案</div>
+                            <div class="tier-price">$39<span>/月</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="features">
+                    <div class="feature-item">3,900 Credits/月</div>
+                    <div class="feature-item">Chat Mode 無限制</div>
+                    <div class="feature-item">Speed & Quality Mode 選擇</div>
+                    <div class="feature-item">最多 2 個並行任務</div>
+                    <div class="feature-item">雲端瀏覽器與自動化基礎</div>
+                </div>
+                <div><span class="badge badge-new">自動化入門</span></div>
+            </div>
+
+            <!-- Manus AI Pro -->
+            <div class="card manus highlight-premium" data-category="business">
+                <div class="card-header">
+                    <div class="card-logo">💎</div>
+                    <div class="card-title-group">
+                        <h3>Manus Pro</h3>
+                        <p>Manus AI · 商務版</p>
+                    </div>
+                </div>
+                <div class="price-section">
+                    <div class="price-tiers">
+                        <div class="price-tier">
+                            <div class="tier-name">Pro 方案</div>
+                            <div class="tier-price">$199<span>/月</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="features">
+                    <div class="feature-item">19,000 Credits/月</div>
+                    <div class="feature-item">Chat Mode 無限制</div>
+                    <div class="feature-item">Advanced Research 與分析</div>
+                    <div class="feature-item">最多 5 個並行任務</div>
+                    <div class="feature-item">第三方工具與 API 整合</div>
+                </div>
+                <div><span class="badge badge-enterprise">商務版</span></div>
+            </div>
+
+            <!-- DeepSeek Info Card -->
+            <div class="card deepseek" data-category="budget">
+                <div class="card-header">
+                    <div class="card-logo">🔍</div>
+                    <div class="card-title-group">
+                        <h3>DeepSeek</h3>
+                        <p>DeepSeek AI · API 計費制</p>
+                    </div>
+                </div>
+                <div class="price-section">
+                    <div class="price-tiers">
+                        <div class="price-tier">
+                            <div class="tier-name">Chat API</div>
+                            <div class="tier-price">$0.27<span>/百萬 token</span></div>
+                        </div>
+                        <div class="price-tier">
+                            <div class="tier-name">Reasoner API</div>
+                            <div class="tier-price">$5.6<span>/百萬 token</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="features">
+                    <div class="feature-item">R1 Reasoner 推理模型</div>
+                    <div class="feature-item">成本效益全球最優</div>
+                    <div class="feature-item">多語言與中文優化</div>
+                    <div class="feature-item">開發者友善 API</div>
+                    <div class="feature-item">按使用量計費（無訂閱）</div>
+                </div>
+                <div><span class="badge badge-new">全球成本最低</span></div>
+            </div>
+        </div>
+
+        <!-- Model Details Section -->
+        <div style="margin-top: 48px;">
+            <h2 style="font-size: 1.8em; margin-bottom: 32px; text-align: center;">各模型詳細評析</h2>
+            <div class="model-details-grid" id="modelDetailsGrid"></div>
+        </div>
+
+        <div class="footer">
+            <p>💡 提示：所有價格以 USD 美元計算，實際費用會因地區與匯率變動而異。資料更新至 2025 年 12 月。</p>
+            <p>最後更新：2025 年 12 月 11 日</p>
+        </div>
+    </div>
+
+    <!-- Job Role Comparison Modal -->
+    <div id="jobRoleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>按職位級別比較</h2>
+                <button class="close-btn" onclick="closeJobRoleComparison()">&times;</button>
+            </div>
+            <div class="job-role-grid" id="jobRoleGrid"></div>
+        </div>
+    </div>
+
+    <!-- AI Recommender Modal -->
+    <div id="recommenderModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>LLM 智能推薦工具</h2>
+                <button class="close-btn" onclick="closeAIRecommender()">&times;</button>
+            </div>
+            <div class="recommender-section">
+                <p style="font-size: 1em; color: var(--color-text-light); margin-bottom: 20px;">
+                    請描述您日常工作中最常進行的任務與需求，我們將為您推薦最合適的 LLM 訂閱方案。
+                </p>
+                <div class="input-group">
+                    <label for="workDescription">📝 描述您的日常工作內容</label>
+                    <textarea id="workDescription" placeholder="例如：我需要編寫大量技術文件、進行代碼審查、分析複雜的商業數據..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="usageFrequency">⏱️ 預期使用頻率</label>
+                    <select id="usageFrequency">
+                        <option value="">請選擇...</option>
+                        <option value="light">輕度使用（每週 1-2 次）</option>
+                        <option value="moderate">中度使用（每天 1-2 小時）</option>
+                        <option value="heavy">重度使用（每天 4+ 小時）</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="budget">💰 預算範圍（USD/月）</label>
+                    <select id="budget">
+                        <option value="">請選擇...</option>
+                        <option value="under20">0-20 美元</option>
+                        <option value="20-50">20-50 美元</option>
+                        <option value="50-100">50-100 美元</option>
+                        <option value="100plus">100+ 美元</option>
+                    </select>
+                </div>
+                <button class="recommend-btn" onclick="getRecommendation()">🎯 獲取推薦</button>
+                <div class="recommendation-results" id="recommendationResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Comparison Modal -->
+    <div id="advancedComparisonModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>進階模型比較</h2>
+                <button class="close-btn" onclick="closeAdvancedComparison()">&times;</button>
+            </div>
+            <div class="recommender-section">
+                <p style="font-size: 1em; color: var(--color-text-light); margin-bottom: 20px;">
+                    選擇您想比較的 LLM 模型（最多 5 個），生成詳細的對比分析表。
+                </p>
+                <div class="selection-info" id="selectionInfo"></div>
+                <div class="model-selector-grid" id="modelSelectorGrid"></div>
+                <div style="display: flex; gap: 12px; margin-top: 24px;">
+                    <button class="compare-btn" id="generateCompareBtn" onclick="generateAdvancedComparison()" disabled>📊 生成比較表</button>
+                    <button class="compare-btn" onclick="resetModelSelection()" style="background: #666;">🔄 重置選擇</button>
+                </div>
+                <div id="advancedComparisonResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modelDetails = {
+            'ChatGPT Plus': {
+                brand: 'openai',
+                unique: '功能最完整、使用者最廣泛',
+                selling: ['GPT-4o 與 o3（降低成本版）', 'DALL·E 3 高質量圖像生成', 'Advanced Voice Mode 自然對話', '每月 30 次深度研究額度', '應用生態最豐富'],
+                limitation: ['推理能力相對有限', 'o3-pro 需升級至 Pro 版', '無視頻生成功能', '無 Operator 自動化代理']
+            },
+            'ChatGPT Pro': {
+                brand: 'openai',
+                unique: '最強推理與自動化代理',
+                selling: ['o3-pro 推理模型（最強）', 'Sora 視頻生成無限制', 'Operator 自動化代理', '無限深度研究', '企業級優先支援'],
+                limitation: ['費用高昂（$200/月）', '需要企業級需求正當性', 'o3-pro 推理速度較慢', '新功能仍在優化階段']
+            },
+            'Gemini Advanced': {
+                brand: 'google',
+                unique: 'Google 生態深度整合',
+                selling: ['Gemini 3 Pro 與 2.5 Pro', 'YouTube 影片摘要與分析', 'Gmail/Google Docs 無縫整合', 'Imagen 3 高質圖像生成', '100GB 儲存空間'],
+                limitation: ['Gemini 3 Deep Think 需升級至 AI Ultra', '第三方整合相對有限', 'API 文檔相對簡略', '企業級支援較弱']
+            },
+            'Google AI Ultra': {
+                brand: 'google',
+                unique: 'Gemini 3 Deep Think 高級推理',
+                selling: ['Gemini 3 Deep Think 推理模式', 'Gemini Agent 多步驟自動化', '企業級客戶服務', '優先 API 支援', 'Advanced 全部功能'],
+                limitation: ['費用偏高（$20/月）', 'Deep Think 處理速度較慢', '與 Pro 版價格接近', '針對複雜問題場景']
+            },
+            'Claude Pro': {
+                brand: 'anthropic',
+                unique: '文案寫作與長文本分析最強',
+                selling: ['Claude Sonnet 4.5 最新版本', '200K context window 長文件', 'Code Execution 與即時調試', '高安全性與隱私保護', '最佳創意寫作體驗'],
+                limitation: ['圖像生成能力較弱', '無實時網頁瀏覽功能', '第三方整合相對少', '無語音交互功能']
+            },
+            'Claude Team': {
+                brand: 'anthropic',
+                unique: '企業協作與共享工作區',
+                selling: ['Claude Sonnet 4.5 + 5x 額度', 'Team 工作區與協作管理', '共享 Prompt 庫與專案', '企業級內容安全性', '商務客戶優先支援'],
+                limitation: ['需要至少 2 個團隊成員', '5x 額度相對有限', '與 Pro 版差異不大', '適合中小型團隊']
+            },
+            'Super Grok': {
+                brand: 'xai',
+                unique: '實時資訊與社媒優化',
+                selling: ['X 平台即時資訊存取', 'Grok 4 推理能力強', '社交媒體內容優化', '高效能推理速度', '政策言論較開放'],
+                limitation: ['平台相對新穎', '整合生態較少', '安全性機制寬鬆', '用戶基數相對小']
+            },
+            'Manus Starter': {
+                brand: 'manus',
+                unique: '自動化工作流專家',
+                selling: ['3,900 Credits/月', 'Chat Mode 無限制', 'Speed & Quality Mode 選項', '雲端瀏覽器功能', '2 個並行任務'],
+                limitation: ['Credits 額度有限', 'API 文檔相對簡略', '自動化能力有上限', '冷啟動學習曲線']
+            },
+            'Manus Pro': {
+                brand: 'manus',
+                unique: '企業級自動化與整合',
+                selling: ['19,000 Credits/月', 'Advanced Research 功能', '5 個並行任務', '第三方工具整合', '優先技術支援'],
+                limitation: ['費用高昂（$199/月）', '需要複雜工作流場景', '自動化學習曲線陡峭', 'API 限制較多']
+            },
+            'DeepSeek': {
+                brand: 'deepseek',
+                unique: '最高性價比選擇',
+                selling: ['Chat API $0.27/百萬 token', 'Reasoner API $5.6/百萬 token', '無訂閱制限制', '多語言支援完善', 'API 優先級靈活'],
+                limitation: ['按使用量計費', '需要開發能力', '非訂閱模式難以預算', '中文支援相對較好']
+            }
+        };
+
+        function initializeModelDetails() {
+            const grid = document.getElementById('modelDetailsGrid');
+            grid.innerHTML = '';
+            Object.entries(modelDetails).forEach(([model, details]) => {
+                const card = document.createElement('div');
+                card.className = 'detail-card';
+                const sellingPoints = details.selling.map(s => `<li>${s}</li>`).join('');
+                const limitations = details.limitation.map(l => `<li>${l}</li>`).join('');
+                card.innerHTML = `
+                    <h4>${model}</h4>
+                    <div class="detail-section">
+                        <div class="detail-section-title">✨ 獨特優勢</div>
+                        <div class="detail-section-content">${details.unique}</div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-section-title">💎 主要賣點</div>
+                        <div class="detail-section-content">
+                            <ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
+                                ${sellingPoints}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="detail-section">
+                        <div class="detail-section-title">⚠️ 限制與考量</div>
+                        <div class="detail-section-content">
+                            <ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
+                                ${limitations}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        const jobRoleData = {
+            '員工/新手': { icon: '👨‍💼', description: '需要基礎的 AI 輔助完成日常工作', recommendation: 'ChatGPT Plus ($20) 或 Gemini Advanced ($19.99)', reasons: '功能完整、價格親民、學習資源豐富' },
+            '中階主管': { icon: '👔', description: '需要進行分析、決策支援、報告生成', recommendation: 'Claude Pro ($20) 或 ChatGPT Plus ($20)', reasons: '強大分析能力、長文件處理、商業報告優勢' },
+            '銷售代表': { icon: '🎯', description: '需要客戶溝通、提案文案、社交媒體內容', recommendation: 'Super Grok ($30) 或 Claude Pro ($20)', reasons: '實時資訊、社媒優化、內容創作強' },
+            '高階管理層': { icon: '👑', description: '需要策略分析、複雜決策、多模型訪問', recommendation: 'ChatGPT Pro ($200)', reasons: '最強推理、企業級支援' },
+            '行政部門': { icon: '📋', description: '需要自動化工作流、文件處理、數據整理', recommendation: 'Manus Pro ($199) 或 Claude Pro ($20)', reasons: '自動化能力、工作流整合、文件處理優秀' },
+            'C-Suite 高管': { icon: '💼', description: '需要全方位多模型支援、自訂企業方案', recommendation: '多模型組合 + 企業級部署', reasons: '高度自訂、數據安全、優先支援' }
+        };
+
+        function initializeJobRoles() {
+            const grid = document.getElementById('jobRoleGrid');
+            grid.innerHTML = '';
+            Object.entries(jobRoleData).forEach(([role, data]) => {
+                const card = document.createElement('div');
+                card.className = 'job-role-card';
+                card.innerHTML = `
+                    <h3>${data.icon} ${role}</h3>
+                    <p>${data.description}</p>
+                    <div class="role-recommendation">
+                        <strong>推薦方案：</strong><br>${data.recommendation}
+                        <br><br><strong>原因：</strong><br>${data.reasons}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        const recommendationEngine = {
+            keywords: {
+                '文案': { models: ['Claude Pro', 'ChatGPT Plus'], score: 0.95 },
+                '寫作': { models: ['Claude Pro', 'ChatGPT Plus'], score: 0.95 },
+                '程式': { models: ['Claude Pro', 'ChatGPT Pro'], score: 0.9 },
+                '代碼': { models: ['Claude Pro', 'ChatGPT Pro'], score: 0.9 },
+                '圖像': { models: ['ChatGPT Plus', 'Gemini Advanced'], score: 0.85 },
+                '視頻': { models: ['ChatGPT Pro'], score: 0.9 },
+                '分析': { models: ['Claude Pro', 'ChatGPT Pro'], score: 0.9 },
+                '自動化': { models: ['Manus Pro', 'Manus Starter'], score: 0.95 },
+                '社媒': { models: ['Super Grok', 'ChatGPT Plus'], score: 0.85 },
+                '推理': { models: ['ChatGPT Pro'], score: 0.95 },
+                '成本': { models: ['DeepSeek', 'Gemini Advanced'], score: 0.85 }
+            },
+            budgetRecommendations: {
+                'under20': ['ChatGPT Plus', 'Gemini Advanced'],
+                '20-50': ['ChatGPT Plus', 'Claude Pro', 'Super Grok'],
+                '50-100': ['Manus Starter', 'Google AI Ultra'],
+                '100plus': ['ChatGPT Pro', 'Manus Pro']
+            },
+            frequencyBonus: {
+                'light': { bonus: 0.9, note: '輕度使用，基礎方案足夠' },
+                'moderate': { bonus: 1.0, note: '中度使用，推薦標準方案' },
+                'heavy': { bonus: 1.1, note: '重度使用，推薦高階方案' }
+            }
+        };
+
+        function getRecommendation() {
+            const description = document.getElementById('workDescription').value.trim();
+            const frequency = document.getElementById('usageFrequency').value;
+            const budget = document.getElementById('budget').value;
+
+            if (!description || !frequency || !budget) {
+                alert('請填寫所有欄位');
+                return;
+            }
+
+            const recommendations = new Map();
+            Object.entries(recommendationEngine.keywords).forEach(([keyword, data]) => {
+                if (description.includes(keyword)) {
+                    data.models.forEach(model => {
+                        recommendations.set(model, (recommendations.get(model) || 0) + data.score);
+                    });
+                }
+            });
+
+            const budgetModels = recommendationEngine.budgetRecommendations[budget] || [];
+            const frequencyBonus = recommendationEngine.frequencyBonus[frequency].bonus;
+
+            const sorted = Array.from(recommendations.entries())
+                .filter(([model]) => budgetModels.includes(model))
+                .sort((a, b) => (b[1] * frequencyBonus) - (a[1] * frequencyBonus))
+                .slice(0, 3);
+
+            let resultsHTML = '<h3 style="color: var(--color-primary); margin-bottom: 16px;">根據您的需求，我們推薦：</h3>';
+            sorted.forEach(([model, score], index) => {
+                const finalScore = Math.min(99, Math.round(score * frequencyBonus * 100));
+                resultsHTML += `
+                    <div class="recommendation-item">
+                        <strong>${index + 1}. ${model}</strong>
+                        <span class="match-score">匹配度 ${finalScore}%</span>
+                    </div>
+                `;
+            });
+            resultsHTML += `<p style="margin-top: 16px; font-size: 0.9em; color: var(--color-text-light);">
+                ${recommendationEngine.frequencyBonus[frequency].note}
+            </p>`;
+
+            const resultsDiv = document.getElementById('recommendationResults');
+            resultsDiv.innerHTML = resultsHTML;
+            resultsDiv.classList.add('show');
+        }
+
+        const allModels = [
+            { name: 'ChatGPT Plus', company: 'OpenAI · 個人' },
+            { name: 'ChatGPT Pro', company: 'OpenAI · 商務' },
+            { name: 'Gemini Advanced', company: 'Google · 個人' },
+            { name: 'Google AI Ultra', company: 'Google · 商務' },
+            { name: 'Claude Pro', company: 'Anthropic · 個人' },
+            { name: 'Claude Team', company: 'Anthropic · 商務' },
+            { name: 'Super Grok', company: 'xAI · 個人' },
+            { name: 'Manus Starter', company: 'Manus AI · 個人' },
+            { name: 'Manus Pro', company: 'Manus AI · 商務' },
+            { name: 'DeepSeek', company: 'DeepSeek AI · API' }
+        ];
+
+        const advancedComparisonData = {
+            '基礎定價': { 'ChatGPT Plus': '$20/月', 'ChatGPT Pro': '$200/月', 'Gemini Advanced': '$19.99/月', 'Google AI Ultra': '$20/月', 'Claude Pro': '$20/月', 'Claude Team': '$25-30/月', 'Super Grok': '$30/月', 'Manus Starter': '$39/月', 'Manus Pro': '$199/月', 'DeepSeek': '$0.27-5.6/百萬token' },
+            '核心模型': { 'ChatGPT Plus': 'GPT-4o + o3', 'ChatGPT Pro': 'o3-pro ✓✓', 'Gemini Advanced': 'Gemini 3 Pro', 'Google AI Ultra': 'Gemini 3 Deep Think ✓✓', 'Claude Pro': 'Claude Sonnet 4.5', 'Claude Team': 'Sonnet 4.5 + 5x', 'Super Grok': 'Grok 4', 'Manus Starter': '自動化工作流', 'Manus Pro': '自動化工作流+', 'DeepSeek': 'R1 Reasoner' },
+            'Context Window': { 'ChatGPT Plus': '無限', 'ChatGPT Pro': '無限', 'Gemini Advanced': '100K', 'Google AI Ultra': '無限', 'Claude Pro': '200K ✓✓', 'Claude Team': '200K ✓✓', 'Super Grok': '標準', 'Manus Starter': '標準', 'Manus Pro': '標準', 'DeepSeek': '4-8K' },
+            '圖像生成': { 'ChatGPT Plus': 'DALL·E 3 ✓', 'ChatGPT Pro': 'DALL·E 3 ✓', 'Gemini Advanced': 'Imagen 3 ✓', 'Google AI Ultra': 'Imagen 3 ✓', 'Claude Pro': '❌', 'Claude Team': '❌', 'Super Grok': '❌', 'Manus Starter': '❌', 'Manus Pro': '❌', 'DeepSeek': '❌' },
+            '視頻生成': { 'ChatGPT Plus': '❌', 'ChatGPT Pro': 'Sora ✓✓', 'Gemini Advanced': '❌', 'Google AI Ultra': '❌', 'Claude Pro': '❌', 'Claude Team': '❌', 'Super Grok': '❌', 'Manus Starter': '❌', 'Manus Pro': '❌', 'DeepSeek': '❌' },
+            '代碼執行': { 'ChatGPT Plus': '基礎', 'ChatGPT Pro': '進階', 'Gemini Advanced': '基礎', 'Google AI Ultra': '進階', 'Claude Pro': '高級 ✓✓', 'Claude Team': '高級 ✓✓', 'Super Grok': '基礎', 'Manus Starter': '集成', 'Manus Pro': '集成', 'DeepSeek': 'API' },
+            '實時資訊': { 'ChatGPT Plus': '❌', 'ChatGPT Pro': '❌', 'Gemini Advanced': 'Google搜尋 ✓', 'Google AI Ultra': 'Google搜尋 ✓', 'Claude Pro': '❌', 'Claude Team': '❌', 'Super Grok': 'X平台 ✓✓', 'Manus Starter': '雲端瀏覽', 'Manus Pro': '雲端瀏覽', 'DeepSeek': '❌' },
+            '自動化': { 'ChatGPT Plus': '基礎', 'ChatGPT Pro': 'Operator ✓✓', 'Gemini Advanced': '基礎', 'Google AI Ultra': 'Agent ✓', 'Claude Pro': '基礎', 'Claude Team': '基礎', 'Super Grok': '基礎', 'Manus Starter': '入門 ✓', 'Manus Pro': '高級 ✓✓', 'DeepSeek': '❌' },
+            '適用場景': { 'ChatGPT Plus': '通用', 'ChatGPT Pro': '高端推理', 'Gemini Advanced': 'Google用戶', 'Google AI Ultra': '企業整合', 'Claude Pro': '文案編碼', 'Claude Team': '團隊協作', 'Super Grok': '社媒內容', 'Manus Starter': '個人自動化', 'Manus Pro': '企業自動化', 'DeepSeek': '開發成本最優' }
+        };
+
+        let selectedModels = [];
+
+        function initializeModelSelectors() {
+            const grid = document.getElementById('modelSelectorGrid');
+            grid.innerHTML = '';
+            allModels.forEach(model => {
+                const label = document.createElement('label');
+                label.className = 'model-checkbox';
+                label.innerHTML = `
+                    <input type="checkbox" value="${model.name}" onchange="updateModelSelection(this)">
+                    <div class="model-label">
+                        <div class="model-name">${model.name}</div>
+                        <div class="model-company">${model.company}</div>
+                    </div>
+                `;
+                grid.appendChild(label);
+            });
+        }
+
+        function updateModelSelection(checkbox) {
+            if (checkbox.checked) {
+                if (selectedModels.length < 5) {
+                    selectedModels.push(checkbox.value);
+                } else {
+                    checkbox.checked = false;
+                    alert('最多只能選擇 5 個模型進行比較');
+                    return;
+                }
+            } else {
+                selectedModels = selectedModels.filter(m => m !== checkbox.value);
+            }
+
+            document.querySelectorAll('.model-checkbox input').forEach(input => {
+                const label = input.closest('.model-checkbox');
+                input.checked ? label.classList.add('checked') : label.classList.remove('checked');
+            });
+
+            const selectionInfo = document.getElementById('selectionInfo');
+            if (selectedModels.length > 0) {
+                selectionInfo.style.display = 'block';
+                selectionInfo.innerHTML = `已選擇 ${selectedModels.length} 個模型 (最多 5 個)：<strong>${selectedModels.join(' • ')}</strong>`;
+                document.getElementById('generateCompareBtn').disabled = false;
+            } else {
+                selectionInfo.style.display = 'none';
+                document.getElementById('generateCompareBtn').disabled = true;
+            }
+        }
+
+        function generateAdvancedComparison() {
+            if (selectedModels.length === 0) {
+                alert('請至少選擇 1 個模型');
+                return;
+            }
+
+            let html = '<div style="margin-top: 24px;"><h3 style="color: var(--color-primary); margin-bottom: 16px;">詳細比較結果</h3>';
+            html += '<div class="advanced-comparison-table"><table><thead><tr><th style="min-width: 120px;">比較項目</th>';
+            selectedModels.forEach(model => {
+                html += `<th style="min-width: 140px;">${model}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+
+            Object.entries(advancedComparisonData).forEach(([metric, values]) => {
+                html += `<tr><td class="comparison-metric">${metric}</td>`;
+                selectedModels.forEach(model => {
+                    const value = values[model] || '❌';
+                    const highlight = value.includes('✓✓') ? 'comparison-highlight' : '';
+                    html += `<td class="${highlight}">${value}</td>`;
+                });
+                html += '</tr>';
+            });
+
+            html += '</tbody></table></div></div>';
+            document.getElementById('advancedComparisonResults').innerHTML = html;
+        }
+
+        function resetModelSelection() {
+            selectedModels = [];
+            document.querySelectorAll('.model-checkbox input').forEach(input => {
+                input.checked = false;
+                input.closest('.model-checkbox').classList.remove('checked');
+            });
+            document.getElementById('selectionInfo').style.display = 'none';
+            document.getElementById('advancedComparisonResults').innerHTML = '';
+            document.getElementById('generateCompareBtn').disabled = true;
+        }
+
+        function openAdvancedComparison() {
+            initializeModelSelectors();
+            resetModelSelection();
+            document.getElementById('advancedComparisonModal').style.display = 'block';
+        }
+
+        function closeAdvancedComparison() {
+            document.getElementById('advancedComparisonModal').style.display = 'none';
+        }
+
+        function openJobRoleComparison() {
+            initializeJobRoles();
+            document.getElementById('jobRoleModal').style.display = 'block';
+        }
+
+        function closeJobRoleComparison() {
+            document.getElementById('jobRoleModal').style.display = 'none';
+        }
+
+        function openAIRecommender() {
+            document.getElementById('recommenderModal').style.display = 'block';
+        }
+
+        function closeAIRecommender() {
+            document.getElementById('recommenderModal').style.display = 'none';
+        }
+
+        function filterCards(category) {
+            const cards = document.querySelectorAll('.card');
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            cards.forEach(card => {
+                if (category === 'all') {
+                    card.classList.remove('hidden');
+                } else {
+                    const cardCategories = card.dataset.category.split(' ');
+                    card.classList.toggle('hidden', !cardCategories.includes(category));
+                }
+            });
+        }
+
+        window.onclick = function(event) {
+            if (event.target.id === 'jobRoleModal') document.getElementById('jobRoleModal').style.display = 'none';
+            if (event.target.id === 'recommenderModal') document.getElementById('recommenderModal').style.display = 'none';
+            if (event.target.id === 'advancedComparisonModal') document.getElementById('advancedComparisonModal').style.display = 'none';
+        };
+
+        document.addEventListener('DOMContentLoaded', initializeModelDetails);
+    </script>
+</body>
+</html>
